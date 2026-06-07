@@ -191,12 +191,10 @@ export function OnboardingWizard() {
         </div>
       )}
 
-      <form action={async () => {
-        setIsSubmitting(true);
-        const fd = new FormData();
-        Object.entries(answers).forEach(([key, val]) => fd.append(key, val));
-        await completeOnboarding(fd);
-      }}>
+      <form action={completeOnboarding} onSubmit={() => setIsSubmitting(true)}>
+        {Object.entries(answers).map(([key, val]) => (
+          <input key={key} type="hidden" name={key} value={val} />
+        ))}
         {step < Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE) && renderQuestions()}
         {step === Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE) && renderTextFields()}
         {step === totalPages - 1 && renderBYOK()}
