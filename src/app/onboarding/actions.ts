@@ -1,5 +1,7 @@
 "use server";
 
+export const maxDuration = 60; // Allow up to 60 seconds for the Nemotron 120b model
+
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { encrypt } from "@/utils/encryption";
