@@ -43,8 +43,10 @@ export default async function GroupsPage() {
             {groups.map((group: any) => (
               <GroupCard 
                 key={group.id} 
+                id={group.id}
                 name={group.name} 
-                members={"?"} // Would need a count query in reality
+                inviteCode={group.invite_code}
+                members={"?"} 
                 rank={"?"} 
                 xp={"0"} 
                 status="Active" 
@@ -61,7 +63,7 @@ export default async function GroupsPage() {
   );
 }
 
-function GroupCard({ name, members, rank, xp, status }: any) {
+function GroupCard({ id, name, inviteCode, members, rank, xp, status }: any) {
   return (
     <div className="border-4 border-primary bg-card shadow-brutalist overflow-hidden flex flex-col h-full">
       <div className="h-32 bg-accent border-b-4 border-primary p-6 flex items-end">
@@ -77,6 +79,10 @@ function GroupCard({ name, members, rank, xp, status }: any) {
           <span className="font-black uppercase flex items-center gap-2"><Users size={20}/> {members}</span>
         </div>
         <div className="flex justify-between items-center border-b-2 border-primary pb-2">
+          <span className="font-bold uppercase text-muted-foreground">Invite Code</span>
+          <span className="font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-1">{inviteCode}</span>
+        </div>
+        <div className="flex justify-between items-center border-b-2 border-primary pb-2">
           <span className="font-bold uppercase text-muted-foreground">Your Rank</span>
           <span className="font-black uppercase">#{rank}</span>
         </div>
@@ -85,9 +91,9 @@ function GroupCard({ name, members, rank, xp, status }: any) {
           <span className="font-black uppercase">{xp}</span>
         </div>
       </div>
-      <div className="p-4 border-t-4 border-primary bg-primary text-primary-foreground text-center hover:bg-accent cursor-pointer transition-colors">
+      <Link href={`/groups/${id}`} className="p-4 border-t-4 border-primary bg-primary text-primary-foreground text-center hover:bg-accent cursor-pointer transition-colors block">
         <span className="font-black text-xl uppercase tracking-widest">Enter Group</span>
-      </div>
+      </Link>
     </div>
   );
 }
