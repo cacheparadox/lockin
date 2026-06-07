@@ -132,7 +132,7 @@ Example response:
 
   if (error) {
     console.error("Error saving AI profile:", error);
-    redirect("/onboarding?error=Failed to calibrate profile");
+    redirect(`/onboarding?error=${encodeURIComponent(error.message || "Failed to calibrate profile")}`);
   }
 
   redirect("/dashboard");
