@@ -1,7 +1,7 @@
 -- Supabase Database Schema for Lock In
 
 -- Enums
-CREATE TYPE task_category AS ENUM ('FITNESS', 'DEEP_WORK', 'BUSINESS', 'STUDY', 'CREATIVE', 'HEALTH', 'CUSTOM');
+CREATE TYPE task_category AS ENUM ('FITNESS', 'DEEP_WORK', 'BUSINESS', 'STUDY', 'CREATIVE', 'HEALTH', 'FINANCE', 'MINDFULNESS');
 CREATE TYPE task_difficulty AS ENUM ('EASY', 'MEDIUM', 'HARD', 'EXTREME', 'LEGENDARY');
 CREATE TYPE contract_state AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE user_state AS ENUM ('ACTIVE', 'COOLING', 'RUSTING');
