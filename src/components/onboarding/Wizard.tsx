@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { completeOnboarding } from "@/app/onboarding/actions";
+
+const LOADING_MESSAGES = [
+  "INITIALIZING NEURAL LINK...",
+  "ANALYZING PSYCHOLOGICAL WEAKNESSES...",
+  "CALCULATING DISCIPLINE COEFFICIENTS...",
+  "OPTIMIZING RPG MULTIPLIERS...",
+  "CONTACTING NEMOTRON 120B...",
+  "FORGING YOUR PROTOCOL..."
+];
 
 const QUESTIONS = [
   // Discipline & Baseline Habits
@@ -35,6 +44,17 @@ export function OnboardingWizard() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isSubmitting) {
+      interval = setInterval(() => {
+        setLoadingMsgIdx(prev => (prev + 1) % LOADING_MESSAGES.length);
+      }, 2500);
+    }
+    return () => clearInterval(interval);
+  }, [isSubmitting]);
 
   const QUESTIONS_PER_PAGE = 5;
   const totalPages = Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE) + 2; // +1 for text fields, +1 for BYOK
@@ -169,7 +189,22 @@ export function OnboardingWizard() {
   );
 
   return (
-    <div className="max-w-4xl w-full mx-auto">
+    <>
+      {isSubmitting && (
+        <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-center p-8 animate-in fade-in duration-500">
+          <div className="max-w-2xl w-full border-8 border-primary p-10 bg-card shadow-brutalist flex flex-col items-center text-center space-y-8">
+            <div className="w-16 h-16 border-8 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <h2 className="text-4xl font-black uppercase text-primary animate-pulse tracking-widest">
+              {LOADING_MESSAGES[loadingMsgIdx]}
+            </h2>
+            <p className="text-xl font-bold text-muted-foreground uppercase">
+              Please wait. The Nemotron 120b model requires up to 20 seconds to process your psychological profile.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-4xl w-full mx-auto">
       <div className="mb-10">
         <div className="flex justify-between items-end mb-4 border-b-4 border-primary pb-4">
           <div>
@@ -229,5 +264,6 @@ export function OnboardingWizard() {
         </div>
       </form>
     </div>
+    </>
   );
 }
