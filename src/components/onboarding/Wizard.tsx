@@ -65,7 +65,6 @@ export function OnboardingWizard() {
   };
 
   const handleNext = () => {
-    // Validate current page answers
     if (step < Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE)) {
       const startIdx = step * QUESTIONS_PER_PAGE;
       const endIdx = startIdx + QUESTIONS_PER_PAGE;
@@ -83,6 +82,82 @@ export function OnboardingWizard() {
   const handlePrev = () => {
     setError(null);
     setStep(s => Math.max(s - 1, 0));
+  };
+
+  const executeCalibration = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const prompt = `You are an elite, brutally honest RPG Calibration Engine. Your job is to calibrate a user's RPG experience multipliers based on a 20-question psychological exam and their current goals.
+
+User Main Quest: ${answers["main_quest"] || "None"}
+Side Quests & Hobbies: ${answers["side_quests"] || "None"}
+Current Status: ${answers["current_status"] || "None"}
+
+Psychological Exam Answers (20 Questions):
+${Object.entries(answers).filter(([k]) => k.startsWith("q")).map(([k, v]) => `${k}: ${v}`).join("\n")}
+
+Analyze their psychological profile, weaknesses, and ambitions. Generate precise XP multipliers for the following 8 categories: fitness, deep_work, business, study, creative, health, finance, mindfulness.
+
+Rules for Multipliers:
+- A multiplier of 1.0 is baseline.
+- If a category is critical to their Main Quest or they show severe weakness in a vital area that needs balancing, assign a high multiplier (up to 3.0).
+- If a category is highly relevant to Side Quests, assign a moderate multiplier (up to 1.8).
+- If they are already perfect at something, you can leave it near 1.0 so they don't get free XP for what's already easy for them.
+
+You MUST respond with a raw JSON object containing EXACTLY these 8 keys mapped to numbers (decimals). Do not include any markdown formatting, backticks, or explanation.
+
+Example response:
+{
+  "fitness_multiplier": 2.1,
+  "deep_work_multiplier": 1.5,
+  "business_multiplier": 1.0,
+  "study_multiplier": 1.8,
+  "creative_multiplier": 1.0,
+  "health_multiplier": 1.5,
+  "finance_multiplier": 2.5,
+  "mindfulness_multiplier": 1.2
+}`;
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${answers["openrouter_key"]}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "nvidia/nemotron-3-super-120b-a12b:free",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("OpenRouter API failed: " + await response.text());
+      }
+
+      const json = await response.json();
+      let content = json.choices[0].message.content;
+      
+      // Clean potential markdown blocks
+      if (content.startsWith("\`\`\`json")) {
+        content = content.replace(/\`\`\`json/g, "").replace(/\`\`\`/g, "").trim();
+      } else if (content.startsWith("\`\`\`")) {
+        content = content.replace(/\`\`\`/g, "").trim();
+      }
+
+      const parsed = JSON.parse(content);
+      const fd = new FormData();
+      Object.entries(answers).forEach(([key, val]) => fd.append(key, val));
+      fd.append("multipliers", JSON.stringify(parsed));
+
+      await completeOnboarding(fd);
+    } catch (err: any) {
+      console.error(err);
+      setError("AI Calibration Failed. Ensure your API Key is valid or try again.");
+      setIsSubmitting(false);
+    }
   };
 
   const renderQuestions = () => {
@@ -226,10 +301,7 @@ export function OnboardingWizard() {
         </div>
       )}
 
-      <form action={completeOnboarding} onSubmit={() => setIsSubmitting(true)}>
-        {Object.entries(answers).map(([key, val]) => (
-          <input key={key} type="hidden" name={key} value={val} />
-        ))}
+      <form onSubmit={executeCalibration}>
         {step < Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE) && renderQuestions()}
         {step === Math.ceil(QUESTIONS.length / QUESTIONS_PER_PAGE) && renderTextFields()}
         {step === totalPages - 1 && renderBYOK()}
