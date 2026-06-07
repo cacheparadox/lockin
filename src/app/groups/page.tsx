@@ -1,5 +1,6 @@
 import DashboardLayout from "@/app/dashboard/layout";
-import { Users, Plus } from "lucide-react";
+import { Users, Plus, UserPlus } from "lucide-react";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -28,9 +29,12 @@ export default async function GroupsPage() {
             <p className="text-xl font-bold text-muted-foreground mt-2 uppercase">Your Circles of Accountability</p>
           </div>
           <div className="flex gap-4">
-            <button className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center gap-2">
+            <Link href="/groups/join" className="border-4 border-primary text-primary font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center gap-2">
+              <UserPlus size={24} /> Join Group
+            </Link>
+            <Link href="/groups/new" className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center gap-2">
               <Plus size={24} /> New Group
-            </button>
+            </Link>
           </div>
         </header>
 

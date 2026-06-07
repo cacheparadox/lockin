@@ -1,4 +1,5 @@
 import DashboardLayout from "@/app/dashboard/layout";
+import Link from "next/link";
 import { ShieldAlert, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/utils/supabase/server";
@@ -29,9 +30,9 @@ export default async function ContractsPage() {
             <h1 className="text-5xl font-heading font-black uppercase">Contracts</h1>
             <p className="text-xl font-bold text-muted-foreground mt-2 uppercase">Long-Term Commitments</p>
           </div>
-          <button className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-destructive transition-colors">
-            Sign New Contract
-          </button>
+          <Link href="/contracts/new" className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-destructive transition-colors">
+            Assign Contract
+          </Link>
         </header>
 
         <section className="space-y-6">

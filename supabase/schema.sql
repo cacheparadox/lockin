@@ -76,6 +76,8 @@ CREATE TABLE li_contracts (
     group_id UUID REFERENCES li_groups(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     description TEXT,
+    category task_category NOT NULL DEFAULT 'FITNESS',
+    difficulty task_difficulty NOT NULL DEFAULT 'MEDIUM',
     target_metric TEXT,
     target_value INTEGER,
     current_value INTEGER DEFAULT 0,
