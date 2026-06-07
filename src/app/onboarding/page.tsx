@@ -73,6 +73,21 @@ export default async function OnboardingPage() {
             ></textarea>
           </div>
 
+          <div className="border-4 border-destructive p-6 bg-destructive/10">
+            <label className="block text-xl font-black uppercase mb-3 text-destructive" htmlFor="openrouter_key">
+              OpenRouter API Key (BYOK)
+            </label>
+            <p className="text-sm font-bold text-destructive/80 mb-3 uppercase">Required to calibrate your AI profile using the Nemotron 120b model. This will be encrypted and safely stored.</p>
+            <input
+              type="password"
+              id="openrouter_key"
+              name="openrouter_key"
+              required
+              className="w-full border-2 border-destructive bg-input p-4 font-bold text-foreground focus:outline-none focus:border-primary transition-colors"
+              placeholder="sk-or-v1-..."
+            />
+          </div>
+
           <button
             type="submit"
             className="w-full bg-primary text-primary-foreground font-black text-2xl uppercase py-6 hover:bg-accent hover:text-accent-foreground transition-all shadow-brutalist-lg mt-8"
