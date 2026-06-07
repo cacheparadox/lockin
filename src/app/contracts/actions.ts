@@ -72,6 +72,37 @@ export async function createContract(formData: FormData) {
     redirect(`/contracts/new?error=${encodeURIComponent(error.message)}`);
   }
 
+  // 4. Send Ntfy.sh Notification
+  const { data: group } = await supabase
+    .from("li_groups")
+    .select("ntfy_topic")
+    .eq("id", group_id)
+    .single();
+
+  if (group && group.ntfy_topic) {
+    const { data: assignee } = await supabase
+      .from("li_profiles")
+      .select("username")
+      .eq("id", assignee_id)
+      .single();
+
+    const username = assignee?.username || "A member";
+    const stakeText = optional_stake ? ` Blood Stake: ${optional_stake}.` : "";
+    
+    try {
+      await fetch(`https://ntfy.sh/${group.ntfy_topic}`, {
+        method: "POST",
+        body: `MISSION ALERT: ${username} has been assigned to conquer "${title}" (${difficulty} difficulty).${stakeText}`,
+        headers: {
+          "Title": "New Contract Assigned",
+          "Tags": "warning,skull"
+        }
+      });
+    } catch (e) {
+      console.error("Failed to send ntfy push notification", e);
+    }
+  }
+
   revalidatePath("/contracts");
   redirect("/contracts");
 }

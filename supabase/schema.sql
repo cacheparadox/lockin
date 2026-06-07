@@ -28,6 +28,7 @@ CREATE TABLE li_groups (
     description TEXT,
     avatar_url TEXT,
     invite_code TEXT UNIQUE NOT NULL,
+    ntfy_topic TEXT UNIQUE,
     created_by UUID REFERENCES public.li_profiles(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

@@ -24,6 +24,7 @@ export async function createGroup(formData: FormData) {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
   const inviteCode = generateInviteCode();
+  const ntfyTopic = `lockin_${inviteCode.replace('LOCKIN-', '')}`;
 
   // 1. Create Group
   const { data: group, error: groupError } = await supabase
@@ -32,6 +33,7 @@ export async function createGroup(formData: FormData) {
       name,
       description,
       invite_code: inviteCode,
+      ntfy_topic: ntfyTopic,
       created_by: user.id
     })
     .select()

@@ -30,14 +30,27 @@ export default async function GroupDetailsPage({ params }: { params: { id: strin
   return (
     <DashboardLayout>
       <div className="space-y-10">
-        <header className="border-b-4 border-primary pb-6 flex justify-between items-end">
+        <header className="border-b-4 border-primary pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
-            <h1 className="text-5xl font-heading font-black uppercase">{group.name}</h1>
-            <p className="text-xl font-bold text-muted-foreground mt-2 uppercase">{group.description || "NO MISSION PROTOCOL DECLARED"}</p>
+            <h1 className="text-4xl md:text-5xl font-heading font-black uppercase">{group.name}</h1>
+            <p className="text-lg md:text-xl font-bold text-muted-foreground mt-2 uppercase">{group.description || "NO MISSION PROTOCOL DECLARED"}</p>
           </div>
-          <div className="bg-primary/10 border-4 border-primary p-4 text-center">
-            <p className="text-sm font-bold text-muted-foreground uppercase mb-1">Invite Code</p>
-            <p className="text-2xl font-black text-primary tracking-widest uppercase">{group.invite_code}</p>
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            {group.ntfy_topic && (
+              <a 
+                href={`https://ntfy.sh/${group.ntfy_topic}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary text-primary-foreground border-4 border-primary p-4 text-center hover:bg-accent transition-colors flex flex-col justify-center items-center shadow-brutalist"
+              >
+                <p className="text-sm font-bold uppercase mb-1 flex items-center gap-2">🔔 Subscribe to Alerts</p>
+                <p className="text-sm font-black tracking-widest uppercase">Via Ntfy.sh</p>
+              </a>
+            )}
+            <div className="bg-primary/10 border-4 border-primary p-4 text-center shadow-brutalist flex-1 sm:flex-none">
+              <p className="text-sm font-bold text-muted-foreground uppercase mb-1">Invite Code</p>
+              <p className="text-2xl font-black text-primary tracking-widest uppercase">{group.invite_code}</p>
+            </div>
           </div>
         </header>
 
