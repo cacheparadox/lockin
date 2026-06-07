@@ -106,7 +106,8 @@ CREATE TABLE li_ai_profiles (
     study_multiplier DECIMAL DEFAULT 1.0,
     creative_multiplier DECIMAL DEFAULT 1.0,
     health_multiplier DECIMAL DEFAULT 1.0,
-    custom_multiplier DECIMAL DEFAULT 1.0,
+    finance_multiplier DECIMAL DEFAULT 1.0,
+    mindfulness_multiplier DECIMAL DEFAULT 1.0,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

@@ -12,6 +12,12 @@ export async function completeOnboarding(formData: FormData) {
     redirect("/login");
   }
 
+  // Extract all 20 questions + text fields
+  const answers: Record<string, string> = {};
+  for (let i = 1; i <= 20; i++) {
+    answers[`q${i}`] = formData.get(`q${i}`) as string || "No answer provided";
+  }
+
   const mainQuest = formData.get("main_quest") as string;
   const sideQuests = formData.get("side_quests") as string;
   const currentStatus = formData.get("current_status") as string;
@@ -35,29 +41,40 @@ export async function completeOnboarding(formData: FormData) {
     study_multiplier: 1.0,
     creative_multiplier: 1.0,
     health_multiplier: 1.0,
-    custom_multiplier: 1.0
+    finance_multiplier: 1.0,
+    mindfulness_multiplier: 1.0
   };
 
   try {
-    const prompt = `You are the Lock In AI. Your job is to calibrate a user's RPG experience multipliers based on their current status and goals.
+    const prompt = `You are an elite, brutally honest RPG Calibration Engine. Your job is to calibrate a user's RPG experience multipliers based on a 20-question psychological exam and their current goals.
+
 User Main Quest: ${mainQuest}
-Side Quests: ${sideQuests}
+Side Quests & Hobbies: ${sideQuests}
 Current Status: ${currentStatus}
 
-Analyze their goals and generate XP multipliers for the following categories: fitness, deep_work, business, study, creative, health, custom.
-A multiplier of 1.0 is baseline. If a category is highly relevant to their Main Quest, assign a higher multiplier (up to 3.0). If relevant to Side Quests, assign a moderate multiplier (up to 1.5).
+Psychological Exam Answers (20 Questions):
+${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join("\n")}
 
-You MUST respond with a raw JSON object containing exactly these 7 keys mapped to numbers (decimals). Do not include markdown formatting or explanation.
+Analyze their psychological profile, weaknesses, and ambitions. Generate precise XP multipliers for the following 8 categories: fitness, deep_work, business, study, creative, health, finance, mindfulness.
+
+Rules for Multipliers:
+- A multiplier of 1.0 is baseline.
+- If a category is critical to their Main Quest or they show severe weakness in a vital area that needs balancing, assign a high multiplier (up to 3.0).
+- If a category is highly relevant to Side Quests, assign a moderate multiplier (up to 1.8).
+- If they are already perfect at something, you can leave it near 1.0 so they don't get free XP for what's already easy for them.
+
+You MUST respond with a raw JSON object containing EXACTLY these 8 keys mapped to numbers (decimals). Do not include any markdown formatting, backticks, or explanation.
 
 Example response:
 {
   "fitness_multiplier": 2.1,
-  "deep_work_multiplier": 1.2,
+  "deep_work_multiplier": 1.5,
   "business_multiplier": 1.0,
-  "study_multiplier": 1.0,
+  "study_multiplier": 1.8,
   "creative_multiplier": 1.0,
   "health_multiplier": 1.5,
-  "custom_multiplier": 1.0
+  "finance_multiplier": 2.5,
+  "mindfulness_multiplier": 1.2
 }`;
 
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -86,13 +103,14 @@ Example response:
       const parsed = JSON.parse(content);
       if (parsed.fitness_multiplier !== undefined) {
         multipliers = {
-          fitness_multiplier: parsed.fitness_multiplier,
-          deep_work_multiplier: parsed.deep_work_multiplier,
-          business_multiplier: parsed.business_multiplier,
-          study_multiplier: parsed.study_multiplier,
-          creative_multiplier: parsed.creative_multiplier,
-          health_multiplier: parsed.health_multiplier,
-          custom_multiplier: parsed.custom_multiplier
+          fitness_multiplier: parsed.fitness_multiplier || 1.0,
+          deep_work_multiplier: parsed.deep_work_multiplier || 1.0,
+          business_multiplier: parsed.business_multiplier || 1.0,
+          study_multiplier: parsed.study_multiplier || 1.0,
+          creative_multiplier: parsed.creative_multiplier || 1.0,
+          health_multiplier: parsed.health_multiplier || 1.0,
+          finance_multiplier: parsed.finance_multiplier || 1.0,
+          mindfulness_multiplier: parsed.mindfulness_multiplier || 1.0
         };
       }
     } else {
