@@ -34,7 +34,7 @@ export async function completeOnboarding(formData: FormData) {
   };
 
   const { error } = await supabase
-    .from("ai_profiles")
+    .from("li_ai_profiles")
     .upsert(aiProfile);
 
   if (error) {

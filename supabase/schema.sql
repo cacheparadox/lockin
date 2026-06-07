@@ -7,7 +7,7 @@ CREATE TYPE contract_state AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE user_state AS ENUM ('ACTIVE', 'COOLING', 'RUSTING');
 
 -- Profiles
-CREATE TABLE profiles (
+CREATE TABLE li_profiles (
     id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE profiles (
 );
 
 -- Groups
-CREATE TABLE groups (
+CREATE TABLE li_groups (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     description TEXT,
@@ -32,20 +32,20 @@ CREATE TABLE groups (
 );
 
 -- Group Members
-CREATE TABLE group_members (
-    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+CREATE TABLE li_group_members (
+    group_id UUID REFERENCES li_groups(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE,
     role TEXT CHECK (role IN ('OWNER', 'ADMIN', 'MEMBER')) DEFAULT 'MEMBER',
     joined_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (group_id, user_id)
 );
 
 -- Tasks
-CREATE TABLE tasks (
+CREATE TABLE li_tasks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-    creator_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-    assignee_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+    group_id UUID REFERENCES li_groups(id) ON DELETE CASCADE,
+    creator_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE,
+    assignee_id UUID REFERENCES li_profiles(id) ON DELETE SET NULL,
     title TEXT NOT NULL,
     description TEXT,
     category task_category NOT NULL,
@@ -58,10 +58,10 @@ CREATE TABLE tasks (
 );
 
 -- Task Proofs
-CREATE TABLE task_proofs (
+CREATE TABLE li_task_proofs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+    task_id UUID REFERENCES li_tasks(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE,
     image_url TEXT,
     caption TEXT,
     status TEXT DEFAULT 'PENDING', -- PENDING, APPROVED, REJECTED
@@ -70,10 +70,10 @@ CREATE TABLE task_proofs (
 );
 
 -- Contracts
-CREATE TABLE contracts (
+CREATE TABLE li_contracts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE,
+    group_id UUID REFERENCES li_groups(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     description TEXT,
     target_metric TEXT,
@@ -87,18 +87,18 @@ CREATE TABLE contracts (
 );
 
 -- War Room Posts
-CREATE TABLE war_room_posts (
+CREATE TABLE li_war_room_posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    group_id UUID REFERENCES groups(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+    group_id UUID REFERENCES li_groups(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE,
     image_url TEXT,
     caption TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- AI Profiles
-CREATE TABLE ai_profiles (
-    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
+CREATE TABLE li_ai_profiles (
+    user_id UUID REFERENCES li_profiles(id) ON DELETE CASCADE PRIMARY KEY,
     main_quest TEXT NOT NULL,
     fitness_multiplier DECIMAL DEFAULT 1.0,
     deep_work_multiplier DECIMAL DEFAULT 1.0,
@@ -111,11 +111,11 @@ CREATE TABLE ai_profiles (
 );
 
 -- RLS Policies (simplified for setup)
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE groups ENABLE ROW LEVEL SECURITY;
-ALTER TABLE group_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE task_proofs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE contracts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE war_room_posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ai_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_group_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_task_proofs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_contracts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_war_room_posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE li_ai_profiles ENABLE ROW LEVEL SECURITY;

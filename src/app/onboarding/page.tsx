@@ -12,7 +12,7 @@ export default async function OnboardingPage() {
 
   // Check if user already has an ai_profile
   const { data: profile } = await supabase
-    .from("ai_profiles")
+    .from("li_ai_profiles")
     .select("main_quest")
     .eq("user_id", user.id)
     .single();
