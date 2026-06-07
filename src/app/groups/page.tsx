@@ -23,16 +23,16 @@ export default async function GroupsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-10">
-        <header className="flex justify-between items-end border-b-4 border-primary pb-6">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-primary pb-6 gap-4">
           <div>
-            <h1 className="text-5xl font-heading font-black uppercase">Your Groups</h1>
-            <p className="text-xl font-bold text-muted-foreground mt-2 uppercase">Your Circles of Accountability</p>
+            <h1 className="text-4xl md:text-5xl font-heading font-black uppercase">Your Groups</h1>
+            <p className="text-lg md:text-xl font-bold text-muted-foreground mt-2 uppercase">Your Circles of Accountability</p>
           </div>
-          <div className="flex gap-4">
-            <Link href="/groups/join" className="border-4 border-primary text-primary font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <Link href="/groups/join" className="border-4 border-primary text-primary font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center justify-center gap-2">
               <UserPlus size={24} /> Join Group
             </Link>
-            <Link href="/groups/new" className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center gap-2">
+            <Link href="/groups/new" className="bg-primary text-primary-foreground font-black px-6 py-3 uppercase shadow-brutalist hover:bg-accent transition-colors flex items-center justify-center gap-2">
               <Plus size={24} /> New Group
             </Link>
           </div>
@@ -70,23 +70,23 @@ function GroupCard({ id, name, inviteCode, members, rank, xp, status }: any) {
         <h2 className="text-3xl font-black uppercase text-primary-foreground">{name}</h2>
       </div>
       <div className="p-6 flex-1 space-y-4">
-        <div className="flex justify-between items-center border-b-2 border-primary pb-2">
+        <div className="flex flex-wrap justify-between items-center border-b-2 border-primary pb-2 gap-x-4 gap-y-1">
           <span className="font-bold uppercase text-muted-foreground">Status</span>
           <span className="font-black uppercase">{status}</span>
         </div>
-        <div className="flex justify-between items-center border-b-2 border-primary pb-2">
+        <div className="flex flex-wrap justify-between items-center border-b-2 border-primary pb-2 gap-x-4 gap-y-1">
           <span className="font-bold uppercase text-muted-foreground">Members</span>
           <span className="font-black uppercase flex items-center gap-2"><Users size={20}/> {members}</span>
         </div>
-        <div className="flex justify-between items-center border-b-2 border-primary pb-2">
+        <div className="flex flex-col 2xl:flex-row justify-between items-start 2xl:items-center border-b-2 border-primary pb-2 gap-2">
           <span className="font-bold uppercase text-muted-foreground">Invite Code</span>
-          <span className="font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-1">{inviteCode}</span>
+          <span className="font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 text-sm sm:text-base break-all">{inviteCode}</span>
         </div>
-        <div className="flex justify-between items-center border-b-2 border-primary pb-2">
+        <div className="flex flex-wrap justify-between items-center border-b-2 border-primary pb-2 gap-x-4 gap-y-1">
           <span className="font-bold uppercase text-muted-foreground">Your Rank</span>
           <span className="font-black uppercase">#{rank}</span>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
           <span className="font-bold uppercase text-muted-foreground">Group XP</span>
           <span className="font-black uppercase">{xp}</span>
         </div>
