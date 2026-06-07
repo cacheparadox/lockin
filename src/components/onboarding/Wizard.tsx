@@ -97,7 +97,12 @@ Side Quests & Hobbies: ${answers["side_quests"] || "None"}
 Current Status: ${answers["current_status"] || "None"}
 
 Psychological Exam Answers (20 Questions):
-${Object.entries(answers).filter(([k]) => k.startsWith("q")).map(([k, v]) => `${k}: ${v}`).join("\n")}
+${Object.entries(answers)
+  .filter(([k]) => k.startsWith("q"))
+  .map(([k, v]) => {
+    const questionText = QUESTIONS.find(q => q.id === k)?.question || k;
+    return `Q: ${questionText}\nA: ${v}`;
+  }).join("\n\n")}
 
 Analyze their psychological profile, weaknesses, and ambitions. Generate precise XP multipliers for the following 8 categories: fitness, deep_work, business, study, creative, health, finance, mindfulness.
 
