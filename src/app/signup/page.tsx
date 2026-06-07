@@ -2,7 +2,8 @@ import { signup } from "@/app/login/actions";
 import Link from "next/link";
 import { Shield } from "lucide-react";
 
-export default function SignupPage() {
+export default async function SignupPage(props: { searchParams: Promise<{ message?: string }> }) {
+  const searchParams = await props.searchParams;
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
       <div className="w-full max-w-md border-4 border-border bg-card p-8 shadow-brutalist">
@@ -12,6 +13,12 @@ export default function SignupPage() {
         <h1 className="text-4xl font-heading font-black text-center uppercase tracking-tight mb-8">
           Initialize Profile
         </h1>
+
+        {searchParams.message && (
+          <div className="bg-destructive/20 border-2 border-destructive text-destructive font-bold p-4 mb-6 uppercase text-sm">
+            {searchParams.message}
+          </div>
+        )}
 
         <form className="space-y-6">
           <div>

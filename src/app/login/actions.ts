@@ -15,7 +15,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect("/login?message=Could not authenticate user");
+    redirect(`/login?message=${encodeURIComponent(error.message)}`);
   }
 
   revalidatePath("/", "layout");
@@ -38,7 +38,8 @@ export async function signup(formData: FormData) {
   const { data: authData, error } = await supabase.auth.signUp(data);
 
   if (error || !authData.user) {
-    redirect("/signup?message=Could not authenticate user");
+    const errorMsg = error?.message || "Could not create user";
+    redirect(`/signup?message=${encodeURIComponent(errorMsg)}`);
   }
 
   // Insert into our custom profiles table
@@ -49,8 +50,8 @@ export async function signup(formData: FormData) {
   });
 
   if (profileError) {
-    console.error("Error creating profile:", profileError);
-    // Even if it fails, they are signed up in Auth, but we log the error.
+    console.error("Profile creation error:", profileError);
+    redirect(`/signup?message=${encodeURIComponent(profileError.message)}`);
   }
 
   revalidatePath("/", "layout");
