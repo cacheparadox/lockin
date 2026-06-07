@@ -35,10 +35,22 @@ export async function signup(formData: FormData) {
     }
   };
 
-  const { error } = await supabase.auth.signUp(data);
+  const { data: authData, error } = await supabase.auth.signUp(data);
 
-  if (error) {
+  if (error || !authData.user) {
     redirect("/signup?message=Could not authenticate user");
+  }
+
+  // Insert into our custom profiles table
+  const { error: profileError } = await supabase.from("li_profiles").insert({
+    id: authData.user.id,
+    username: formData.get("username") as string,
+    email: formData.get("email") as string,
+  });
+
+  if (profileError) {
+    console.error("Error creating profile:", profileError);
+    // Even if it fails, they are signed up in Auth, but we log the error.
   }
 
   revalidatePath("/", "layout");

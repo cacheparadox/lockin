@@ -1,7 +1,22 @@
 import DashboardLayout from "@/app/dashboard/layout";
-import { MessageSquare, ThumbsUp, Flame } from "lucide-react";
+import { MessageSquare, Flame } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function WarRoomPage() {
+export default async function WarRoomPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Fetch recent posts
+  const { data: posts } = await supabase
+    .from("li_war_room_posts")
+    .select("*, li_profiles(username, level)")
+    .order("created_at", { ascending: false });
+
   return (
     <DashboardLayout>
       <div className="space-y-10 max-w-4xl mx-auto">
@@ -27,23 +42,24 @@ export default function WarRoomPage() {
         </div>
 
         <div className="space-y-8">
-          <WarRoomPost 
-            author="David G." 
-            level="Lvl 44 Warlord" 
-            time="1 hour ago"
-            content="If you're reading this instead of working, you're losing."
-            hasImage={true}
-            likes={12}
-            comments={3}
-          />
-          <WarRoomPost 
-            author="Sarah" 
-            level="Lvl 29 Ironblood" 
-            time="4 hours ago"
-            content="Finished the Q3 roadmap. Time to lift."
-            likes={8}
-            comments={1}
-          />
+          {posts && posts.length > 0 ? (
+            posts.map(post => (
+              <WarRoomPost 
+                key={post.id}
+                author={(post as any).li_profiles?.username || "Unknown"} 
+                level={`Lvl ${(post as any).li_profiles?.level || 1}`} 
+                time={new Date(post.created_at).toLocaleDateString()}
+                content={post.caption}
+                hasImage={!!post.image_url}
+                likes={0}
+                comments={0}
+              />
+            ))
+          ) : (
+            <div className="border-4 border-border p-10 bg-card text-center text-muted-foreground font-bold uppercase text-2xl">
+              THE WAR ROOM IS SILENT. BE THE FIRST TO STRIKE.
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

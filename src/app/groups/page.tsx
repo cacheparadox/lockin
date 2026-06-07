@@ -1,7 +1,24 @@
 import DashboardLayout from "@/app/dashboard/layout";
-import { Users, Plus, Shield } from "lucide-react";
+import { Users, Plus } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function GroupsPage() {
+export default async function GroupsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Fetch groups where user is a member
+  const { data: memberships } = await supabase
+    .from("li_group_members")
+    .select("role, joined_at, li_groups(*)")
+    .eq("user_id", user.id);
+
+  const groups = memberships?.map(m => m.li_groups).filter(Boolean) || [];
+
   return (
     <DashboardLayout>
       <div className="space-y-10">
@@ -17,10 +34,24 @@ export default function GroupsPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <GroupCard name="Iron Council" members={12} rank={3} xp="142K" status="Thriving" />
-          <GroupCard name="Founders Club" members={5} rank={1} xp="89K" status="Active" />
-        </div>
+        {groups.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {groups.map((group: any) => (
+              <GroupCard 
+                key={group.id} 
+                name={group.name} 
+                members={"?"} // Would need a count query in reality
+                rank={"?"} 
+                xp={"0"} 
+                status="Active" 
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="border-4 border-border p-10 bg-card text-center text-muted-foreground font-bold uppercase text-xl">
+            NO GROUPS JOINED. YOU ARE A LONE WOLF.
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
