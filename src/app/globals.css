@@ -45,87 +45,77 @@
 }
 
 :root {
-  /* Brutalist Performance Theme */
-  --background: #F4F1EA;
-  --foreground: #171717;
-
-  --card: #F4F1EA;
-  --card-foreground: #171717;
-
-  --popover: #F4F1EA;
-  --popover-foreground: #171717;
-
-  --primary: #171717;
-  --primary-foreground: #F4F1EA;
-
-  --secondary: #e5e5e5;
-  --secondary-foreground: #171717;
-
-  --muted: #e5e5e5;
-  --muted-foreground: #525252;
-
-  --accent: #D97706;
-  --accent-foreground: #F4F1EA;
-
-  --destructive: #991B1B;
-  --success: #166534;
-
-  --border: #171717;
-  --input: #171717;
-  --ring: #171717;
-
-  /* Sharp corners */
-  --radius: 0rem;
-
-  --sidebar: #F4F1EA;
-  --sidebar-foreground: #171717;
-  --sidebar-primary: #171717;
-  --sidebar-primary-foreground: #F4F1EA;
-  --sidebar-accent: #D97706;
-  --sidebar-accent-foreground: #F4F1EA;
-  --sidebar-border: #171717;
-  --sidebar-ring: #171717;
-}
-
-.dark {
-  /* No separate dark mode specified in PRD, using same brutalist theme or a true dark version if needed later */
-  /* For now, mapping dark to a reversed brutalist theme */
-  --background: #171717;
-  --foreground: #F4F1EA;
+  /* Premium Dark Neo-Brutalist Theme (Red & Black) */
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
 
   --card: #171717;
-  --card-foreground: #F4F1EA;
+  --card-foreground: #f5f5f5;
 
   --popover: #171717;
-  --popover-foreground: #F4F1EA;
+  --popover-foreground: #f5f5f5;
 
-  --primary: #F4F1EA;
-  --primary-foreground: #171717;
+  --primary: #dc2626; /* Deep Red */
+  --primary-foreground: #ffffff;
 
   --secondary: #262626;
-  --secondary-foreground: #F4F1EA;
+  --secondary-foreground: #f5f5f5;
 
   --muted: #262626;
   --muted-foreground: #a3a3a3;
 
-  --accent: #D97706;
-  --accent-foreground: #171717;
+  --accent: #ef4444; /* Bright Red */
+  --accent-foreground: #ffffff;
 
-  --destructive: #ef4444;
-  --success: #22c55e;
+  --destructive: #991b1b;
+  --success: #16a34a;
 
-  --border: #F4F1EA;
-  --input: #F4F1EA;
-  --ring: #F4F1EA;
+  --border: #3f3f46;
+  --input: #262626;
+  --ring: #dc2626;
 
-  --sidebar: #171717;
-  --sidebar-foreground: #F4F1EA;
-  --sidebar-primary: #F4F1EA;
-  --sidebar-primary-foreground: #171717;
-  --sidebar-accent: #D97706;
-  --sidebar-accent-foreground: #171717;
-  --sidebar-border: #F4F1EA;
-  --sidebar-ring: #F4F1EA;
+  /* Sharp corners */
+  --radius: 0rem;
+
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #dc2626;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #3f3f46;
+  --sidebar-ring: #dc2626;
+}
+
+.dark {
+  /* Same as root because it's fundamentally a dark theme */
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #171717;
+  --card-foreground: #f5f5f5;
+  --popover: #171717;
+  --popover-foreground: #f5f5f5;
+  --primary: #dc2626;
+  --primary-foreground: #ffffff;
+  --secondary: #262626;
+  --secondary-foreground: #f5f5f5;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #ef4444;
+  --accent-foreground: #ffffff;
+  --destructive: #991b1b;
+  --success: #16a34a;
+  --border: #3f3f46;
+  --input: #262626;
+  --ring: #dc2626;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #dc2626;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #3f3f46;
+  --sidebar-ring: #dc2626;
 }
 
 @layer base {
@@ -134,19 +124,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Brutalist heavy typography setup */
     font-feature-settings: "rlig" 1, "calt" 1;
+    color-scheme: dark;
   }
   html {
     @apply font-sans;
   }
   
-  /* Brutalist Shadows */
+  /* Neo-Brutalist Shadows */
   .shadow-brutalist {
-    box-shadow: 4px 4px 0px 0px var(--color-foreground);
+    box-shadow: 4px 4px 0px 0px var(--color-primary);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .shadow-brutalist:hover {
+    box-shadow: 6px 6px 0px 0px var(--color-accent);
+    transform: translate(-2px, -2px);
   }
   
   .shadow-brutalist-lg {
-    box-shadow: 8px 8px 0px 0px var(--color-foreground);
+    box-shadow: 8px 8px 0px 0px var(--color-primary);
   }
 }

@@ -32,7 +32,7 @@ export default function WarRoomPage() {
             level="Lvl 44 Warlord" 
             time="1 hour ago"
             content="If you're reading this instead of working, you're losing."
-            imageUrl="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80"
+            hasImage={true}
             likes={12}
             comments={3}
           />
@@ -50,7 +50,7 @@ export default function WarRoomPage() {
   );
 }
 
-function WarRoomPost({ author, level, time, content, imageUrl, likes, comments }: any) {
+function WarRoomPost({ author, level, time, content, hasImage, likes, comments }: any) {
   return (
     <article className="border-4 border-primary bg-card shadow-brutalist overflow-hidden">
       <div className="p-6 border-b-4 border-primary bg-muted flex justify-between items-center">
@@ -64,9 +64,11 @@ function WarRoomPost({ author, level, time, content, imageUrl, likes, comments }
         <span className="font-bold text-muted-foreground uppercase">{time}</span>
       </div>
       
-      {imageUrl && (
+      {hasImage && (
         <div className="border-b-4 border-primary">
-          <img src={imageUrl} alt="Proof" className="w-full h-96 object-cover grayscale contrast-150 hover:grayscale-0 transition-all duration-500" />
+          <div className="w-full h-96 bg-muted flex items-center justify-center font-bold text-muted-foreground uppercase border-2 border-primary">
+            [Proof Image Uploaded]
+          </div>
         </div>
       )}
       

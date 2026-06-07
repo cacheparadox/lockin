@@ -1,0 +1,76 @@
+import { signup } from "@/app/login/actions";
+import Link from "next/link";
+import { Shield } from "lucide-react";
+
+export default function SignupPage() {
+  return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-md border-4 border-border bg-card p-8 shadow-brutalist">
+        <div className="flex justify-center mb-6">
+          <Shield size={64} className="text-primary" strokeWidth={2} />
+        </div>
+        <h1 className="text-4xl font-heading font-black text-center uppercase tracking-tight mb-8">
+          Initialize Profile
+        </h1>
+
+        <form className="space-y-6">
+          <div>
+            <label className="block text-sm font-bold uppercase text-muted-foreground mb-2" htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              className="w-full border-2 border-border bg-input p-3 font-bold text-foreground focus:outline-none focus:border-primary transition-colors"
+              placeholder="e.g. Maverick"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold uppercase text-muted-foreground mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className="w-full border-2 border-border bg-input p-3 font-bold text-foreground focus:outline-none focus:border-primary transition-colors"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold uppercase text-muted-foreground mb-2" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              className="w-full border-2 border-border bg-input p-3 font-bold text-foreground focus:outline-none focus:border-primary transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            formAction={signup}
+            className="w-full bg-primary text-primary-foreground font-black text-xl uppercase py-4 mt-4 hover:bg-accent hover:text-accent-foreground transition-all shadow-brutalist"
+          >
+            Create Identity
+          </button>
+        </form>
+
+        <div className="mt-8 pt-6 border-t-2 border-border text-center">
+          <p className="text-muted-foreground font-bold uppercase text-sm">
+            Already registered?{" "}
+            <Link href="/login" className="text-primary hover:text-accent underline underline-offset-4">
+              Enter OS
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
